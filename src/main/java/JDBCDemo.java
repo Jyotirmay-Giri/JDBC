@@ -5,8 +5,8 @@ import java.sql.SQLException;
 public class JDBCDemo {
 
     private static final String URL ="jdbc:mysql://localhost:3306/demo_db";
-    private static final String USER = "user";
-    private static final String PASSWORD = "password";
+    private static final String USER = "*******";
+    private static final String PASSWORD = "*****";
 
     public static void main(String[] args) {
 
