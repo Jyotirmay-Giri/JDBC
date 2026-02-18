@@ -3,8 +3,8 @@ import java.sql.*;
 public class JDBCDemo {
 
     private static final String URL ="jdbc:mysql://localhost:3306/demo_db";
-    private static final String USER = "****";
-    private static final String PASSWORD = "*****";
+    private static final String USER = "user";
+    private static final String PASSWORD = "password";
 
     public static void main(String[] args) {
 
@@ -14,8 +14,8 @@ public class JDBCDemo {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
             System.out.println("Connected to Database.........!");
             insertStudent(conn,"Jyoti","jyoti@gmail.com"); // calling for inserting the data
-            updateStudent(conn,1,"Shree","shree@gmail.com"); // Updating the table
-            deleteStudent(conn,1); // Deleting the row by using id
+            updateStudent(conn,3,"Shree","shree@gmail.com"); // Updating the table
+//            deleteStudent(conn,1); // Deleting the row by using id
             selectStudent(conn); // calling for see/print the table
         } catch (SQLException e) {
             e.printStackTrace();
@@ -78,16 +78,33 @@ public class JDBCDemo {
     }
 
     // Used for updating the table
+//    private static void updateStudent(Connection conn,int id,String name,String email){
+//        String sql = "UPDATE student SET name = '" + name + "', email = '" + email + "' WHERE id=" + id;
+//        try(Statement stmt = conn.createStatement()){
+//            int rows = stmt.executeUpdate(sql);
+//            System.out.println("UPDATED : " + rows);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
+
+
     private static void updateStudent(Connection conn,int id,String name,String email){
-        String sql = "UPDATE student SET name = '" + name + "', email = '" + email + "' WHERE id=" + id;
-        try(Statement stmt = conn.createStatement()){
-            int rows = stmt.executeUpdate(sql);
+        String sql = "UPDATE student SET name = ?, email = ? WHERE id= ?";  // Using place holder
+        try(PreparedStatement pstmt = conn.prepareStatement(sql)){  // For placeholder we need to use PrepareStatement
+            pstmt.setString(1,name);
+            pstmt.setString(2,email);
+            pstmt.setInt(3,id);
+            int rows = pstmt.executeUpdate();
             System.out.println("UPDATED : " + rows);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
     }
+
+
 
     // Here we are deleting the row
     private static void deleteStudent(Connection conn,int id){
