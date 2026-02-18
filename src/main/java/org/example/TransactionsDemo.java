@@ -11,10 +11,26 @@ public class TransactionsDemo {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
             System.out.println("Connected to Database.........!");
 
-            // INSERT INTO ORDER
-            int orderId = insertOrder(conn,101,"Jyoti",2000.0);
-            // INSERT INTO ORDER ITEM
-            insertOrderItem(conn,orderId,"Laptop01",1,2000.0);
+            // TURNED OFF AUTO COMMIT
+            conn.setAutoCommit(false); // By this we are autocommit is disabled(until our transaction is completed db won't be updated)
+            try{
+                // INSERT INTO ORDER
+                int orderId = insertOrder(conn,101,"Jyoti",2000.0);
+                // INSERT INTO ORDER ITEM
+                insertOrderItem(conn,orderId,"Laptop01",1,2000.0);
+
+                // MANUAL COMMIT
+                conn.commit();
+                System.out.println("Transaction Committed Successfully");
+            }catch (Exception e) {
+                e.printStackTrace();
+                conn.rollback();
+                System.out.println("Operation rolled back successfully");
+            }finally {
+                conn.setAutoCommit(true);
+            }
+
+
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -28,6 +44,8 @@ public class TransactionsDemo {
             pstmt.setString(2,productName);
             pstmt.setInt(3,quantity);
             pstmt.setDouble(4,price);
+
+//            int x = 10/0;
             int rows = pstmt.executeUpdate();
             System.out.println("INSERTED into order_items : " + rows);
 
